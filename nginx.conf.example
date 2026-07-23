@@ -1,0 +1,44 @@
+# UL CMS — пример конфигурации nginx
+#
+# .htaccess работает только на Apache. Если сайт обслуживает nginx,
+# добавьте этот блок в server {} вашего сайта (или попросите хостера).
+# Заменяет три вещи из .htaccess: индексный файл, ЧПУ-маршрутизацию
+# и защиту служебных файлов.
+
+# --- внутри server { } ---
+
+index index.php;
+
+# ЧПУ: всё, чего нет на диске, обрабатывает роутер CMS
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+
+# Служебные файлы и каталоги — закрыты (аналог .htaccess)
+location ~* \.(md|json|log|key)$ { deny all; }
+location ^~ /cache/   { deny all; }
+location ^~ /system/  { deny all; }
+location ^~ /users/   { deny all; }
+location ^~ /content/ { deny all; }
+location ^~ /backups/ { deny all; }
+
+# Медиатека: только статика, PHP внутри не исполняется
+location ^~ /media/ {
+    location ~ \.php$ { deny all; }
+    try_files $uri =404;
+    expires 30d;
+}
+
+# Статика тем и админки
+location ~* \.(css|js|woff2|png|jpe?g|gif|webp|svg|ico)$ {
+    try_files $uri =404;
+    expires 30d;
+}
+
+# PHP через php-fpm (путь к сокету — под ваш сервер)
+location ~ \.php$ {
+    try_files $uri =404;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass unix:/run/php/php-fpm.sock;
+}

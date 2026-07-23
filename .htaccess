@@ -1,0 +1,46 @@
+Options -Indexes
+
+# HTTP Security Headers (только если mod_headers доступен)
+<IfModule mod_headers.c>
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  # HSTS — только по HTTPS (год, с поддоменами)
+  Header set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+  # Content-Security-Policy здесь БОЛЬШЕ НЕ ЗАДАЁТСЯ — его шлёт PHP:
+  # публичной части его собирает system/Csp.php (свои файлы + отпечатки
+  # инлайн-скриптов страницы + домены, разрешённые в Настройках),
+  # админке — admin/index.php (свой строгий, с nonce).
+  #
+  # Статическая строка здесь мешала бы обоим: браузер применяет все заголовки
+  # CSP как ПЕРЕСЕЧЕНИЕ, то есть разрешено лишь то, что разрешено везде.
+  # Домен счётчика, добавленный в Настройках, при живой строке в .htaccess
+  # просто не заработал бы, а ослабить её ради этого — значит вернуться
+  # к политике, которая ничего не запрещает.
+  # Отключаем чувствительные API браузера по умолчанию
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  Header unset X-Powered-By
+</IfModule>
+
+# Запрет прямого доступа к .md и .json
+<FilesMatch "\.(md|json)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order Allow,Deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Mod Rewrite
+RewriteEngine On
+RewriteBase /
+
+# Разрешить прямой доступ к файлам и папкам
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Всё остальное — через index.php
+RewriteRule ^ index.php [L]

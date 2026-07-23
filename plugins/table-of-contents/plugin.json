@@ -1,0 +1,6 @@
+{
+    "name": "Table of contents",
+    "description": "When an article has two or more headings (H2/H3), adds a clickable list of sections at the top and sets anchors. No configuration needed.",
+    "version": "1.0",
+    "author": "deeno"
+}

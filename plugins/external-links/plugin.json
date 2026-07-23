@@ -1,0 +1,6 @@
+{
+    "name": "External links",
+    "description": "Opens every external link in posts in a new tab (target=\"_blank\" rel=\"noopener\"). Links to your own domain are left alone.",
+    "version": "1.0",
+    "author": "deeno"
+}

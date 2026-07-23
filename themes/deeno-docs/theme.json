@@ -1,0 +1,6 @@
+{
+    "name": "deeno-docs",
+    "description": "Documentation and wiki theme in the deeno UI style: section tree on the left, \"On this page\" with scroll-spy on the right, callouts, dark mode, search, RU/EN.",
+    "version": "1.0",
+    "author": "deeno"
+}

@@ -1,0 +1,6 @@
+{
+    "name": "Lazy images",
+    "description": "Adds loading=\"lazy\" and decoding=\"async\" to every image in posts — pages with many photos load noticeably faster.",
+    "version": "1.0",
+    "author": "deeno"
+}

@@ -1,0 +1,553 @@
+/* ============================================================
+   deeno — тема Journal
+   Журнальная вёрстка: серифная типографика (Georgia), «шапка
+   издания», пост-обложка на главной, буквица и крупный лид
+   в статьях. Акцент — один: бутылочно-зелёный.
+   ============================================================ */
+
+:root {
+  --paper: #ffffff;
+  --ink: #17140f;            /* тёплый почти-чёрный, типографская краска */
+  --ink-soft: #3d382f;
+  --muted: #857f73;
+  --rule: #e3ded4;           /* тёплые линейки */
+  --accent: #1f5e3f;         /* бутылочно-зелёный: ссылки, штрихи */
+  --accent-ink: #17462f;
+
+  --serif: Georgia, 'Times New Roman', 'Noto Serif', serif;
+  --sans: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  --column: 680px;
+  --wide: 1080px;
+  --gutter: 24px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 17px; }
+
+body {
+  font-family: var(--serif);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-ink); }
+
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+::selection { background: #e9f2ec; }
+
+/* ------------------------------------------------------------
+   Плашка предпросмотра
+   ------------------------------------------------------------ */
+
+.preview-bar {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 14px;
+  text-align: center;
+  padding: 10px var(--gutter);
+}
+
+/* ------------------------------------------------------------
+   Шапка издания
+   ------------------------------------------------------------ */
+
+.masthead { border-bottom: 3px double var(--rule); }
+
+.masthead__inner {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 40px var(--gutter) 24px;
+  text-align: center;
+}
+
+.masthead__date {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.masthead__title {
+  font-size: clamp(40px, 8vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  color: var(--ink);
+  display: inline-block;
+}
+
+.masthead__title:hover { color: var(--ink); }
+
+.masthead__tagline {
+  margin-top: 10px;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.masthead__nav { border-top: 1px solid var(--rule); }
+
+.masthead__nav-inner {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  height: 52px;
+}
+
+.masthead__nav a {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.masthead__nav a:hover { color: var(--accent); }
+
+.masthead__search input {
+  font-family: var(--sans);
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  width: 150px;
+}
+
+.masthead__search input:focus { outline: none; border-color: var(--ink); }
+
+/* ------------------------------------------------------------
+   Основная область
+   ------------------------------------------------------------ */
+
+.journal-main {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 48px var(--gutter) 96px;
+}
+
+/* Заголовки разделов: тег / рубрика / поиск */
+
+.section-head {
+  text-align: center;
+  padding-bottom: 32px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-head__eyebrow,
+.story__eyebrow,
+.cover-story__eyebrow,
+.article__eyebrow {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.section-head__title { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; margin-top: 8px; }
+.section-head__meta { font-family: var(--sans); font-size: 14px; color: var(--muted); margin-top: 8px; }
+.section-head__lead {
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 10px auto 0;
+  max-width: 36em;
+}
+.list-empty { text-align: center; color: var(--muted); font-style: italic; }
+
+/* ------------------------------------------------------------
+   Обложка номера — первый пост главной
+   ------------------------------------------------------------ */
+
+.cover-story {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto 56px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.cover-story__title {
+  font-size: clamp(34px, 6vw, 58px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 12px 0 20px;
+}
+
+.cover-story__title a { color: var(--ink); }
+.cover-story__title a:hover { color: var(--accent-ink); }
+
+.cover-story__img {
+  width: 100%;
+  max-height: 460px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.cover-story__excerpt {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.cover-story__excerpt p { margin-bottom: 10px; }
+
+.cover-story__more {
+  display: inline-block;
+  margin-top: 18px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 2px;
+}
+
+/* ------------------------------------------------------------
+   Сетка материалов
+   ------------------------------------------------------------ */
+
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 40px 48px;
+}
+
+.story__title {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 8px 0 10px;
+}
+
+.story__title a { color: var(--ink); }
+.story__title a:hover { color: var(--accent-ink); }
+
+.story__excerpt {
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+
+.story__excerpt p { margin-bottom: 8px; }
+
+.story__tags { margin-top: 10px; }
+
+.story__tags a,
+.article__tags a {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-right: 10px;
+}
+
+.story__tags a:hover, .article__tags a:hover { color: var(--accent); }
+
+/* ------------------------------------------------------------
+   Статья
+   ------------------------------------------------------------ */
+
+.article { max-width: var(--column); margin: 0 auto; }
+
+.article__head { text-align: center; margin-bottom: 32px; }
+
+.article__eyebrow a { color: var(--accent); }
+
+.article__title {
+  font-size: clamp(32px, 6vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin-top: 10px;
+}
+
+.article__cover { margin: 0 0 32px; }
+.article__cover img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+
+.article__body {
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+/* Лид: первый абзац крупнее */
+.article__body > p:first-child {
+  font-size: 21px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* Буквица — подпись темы */
+.article__body > p:first-child::first-letter {
+  font-size: 3.1em;
+  line-height: 0.82;
+  font-weight: 700;
+  float: left;
+  padding: 6px 10px 0 0;
+  color: var(--accent);
+}
+
+.article__body--page > p:first-child { font-size: 18px; color: var(--ink); }
+.article__body--page > p:first-child::first-letter {
+  font-size: inherit; float: none; padding: 0; color: inherit; font-weight: inherit; line-height: inherit;
+}
+
+.article__body h2, .article__body h3, .article__body h4 {
+  line-height: 1.25;
+  margin: 40px 0 14px;
+  letter-spacing: -0.01em;
+}
+
+.article__body h2 { font-size: 30px; }
+.article__body h3 { font-size: 23px; }
+.article__body h4 { font-size: 19px; }
+
+.article__body p { margin-bottom: 18px; }
+
+.article__body a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rule); }
+.article__body a:hover { text-decoration-color: var(--accent); }
+
+.article__body ul, .article__body ol { margin: 0 0 18px 26px; }
+.article__body li { margin-bottom: 8px; }
+
+.article__body blockquote {
+  margin: 28px 0;
+  padding: 0 0 0 24px;
+  border-left: 3px solid var(--accent);
+  font-style: italic;
+  font-size: 20px;
+  color: var(--ink-soft);
+}
+
+.article__body code {
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 0.85em;
+  background: #f4f2ec;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.article__body pre {
+  background: #f4f2ec;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 18px 22px;
+  overflow-x: auto;
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.article__body pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+.article__body img { max-width: 100%; margin: 10px 0; }
+
+.article__body hr {
+  border: none;
+  text-align: center;
+  margin: 36px 0;
+}
+
+.article__body hr::after {
+  content: "· · ·";
+  color: var(--muted);
+  letter-spacing: 0.6em;
+  font-size: 18px;
+}
+
+.article__body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 18px;
+  font-family: var(--sans);
+  font-size: 15px;
+}
+
+.article__body th, .article__body td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+}
+
+.article__body th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.article__tags {
+  max-width: var(--column);
+  margin: 28px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+
+/* Читайте также */
+
+.related {
+  max-width: var(--wide);
+  margin: 64px auto 0;
+  padding-top: 32px;
+  border-top: 3px double var(--rule);
+}
+
+.related__title {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.story-grid--related { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+/* ------------------------------------------------------------
+   Пагинация
+   ------------------------------------------------------------ */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+
+.pagination__link {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pagination__info { font-family: var(--sans); font-size: 13px; color: var(--muted); }
+
+/* ------------------------------------------------------------
+   404
+   ------------------------------------------------------------ */
+
+.error-page { text-align: center; padding: 64px 0 96px; }
+.error-page__code { font-size: clamp(80px, 20vw, 160px); font-weight: 700; line-height: 1; color: var(--rule); }
+.error-page__title { font-size: 30px; margin-top: 12px; }
+.error-page__text { color: var(--muted); font-style: italic; margin-top: 10px; }
+.error-page__home {
+  display: inline-block;
+  margin-top: 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------
+   Подвал
+   ------------------------------------------------------------ */
+
+.journal-footer { border-top: 3px double var(--rule); }
+
+.journal-footer__inner {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 28px var(--gutter);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+.journal-footer__brand { font-family: var(--serif); font-size: 17px; font-weight: 700; }
+.journal-footer__note { color: var(--muted); }
+
+/* ------------------------------------------------------------
+   Кнопка редактирования (in-page edit)
+   ------------------------------------------------------------ */
+
+.edit-fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .25);
+}
+
+.edit-fab:hover { color: var(--paper); opacity: .85; }
+.edit-fab svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+/* ------------------------------------------------------------
+   Адаптивность
+   ------------------------------------------------------------ */
+
+@media (max-width: 720px) {
+  html { font-size: 16px; }
+  .masthead__inner { padding: 28px var(--gutter) 18px; }
+  .masthead__nav-inner {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 14px 20px;
+    padding: 12px var(--gutter);
+  }
+  .masthead__search { width: 100%; }
+  .masthead__search input { width: 100%; }
+  .journal-main { padding-top: 32px; }
+  .cover-story { margin-bottom: 40px; padding-bottom: 32px; }
+  .story-grid { gap: 32px; }
+  .article__body { font-size: 17px; }
+}
+
+/* --- Конструкции редактора deeno: выделение, цвет, выравнивание, видео --- */
+mark { background: #fde68a; color: inherit; padding: 0 .15em; border-radius: 2px; }
+.md-left { text-align: left; }
+.md-center { text-align: center; }
+.md-right { text-align: right; }
+.md-justify { text-align: justify; }
+.c-red { color: #dc2626; }
+.c-orange { color: #ea580c; }
+.c-yellow { color: #ca8a04; }
+.c-green { color: #16a34a; }
+.c-blue { color: #2563eb; }
+.c-purple { color: #9333ea; }
+.c-gray { color: #6b7280; }
+.md-video { position: relative; padding-bottom: 56.25%; height: 0; margin: 1.4em 0; }
+.md-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 8px; }
+
+/* Соцсети в подвале */
+.journal-footer__social { display: flex; gap: 14px; align-items: center; list-style: none; margin: 0; padding: 0; }
+.journal-footer__social a { display: inline-flex; }
+.journal-footer__social svg { display: block; }

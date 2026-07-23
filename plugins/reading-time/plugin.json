@@ -1,0 +1,6 @@
+{
+    "name": "Reading time",
+    "description": "Shows \"≈ N min read\" at the top of a post. Counts words at 200 per minute (Cyrillic included); notes under 100 words are skipped.",
+    "version": "1.0",
+    "author": "deeno"
+}

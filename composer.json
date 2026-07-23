@@ -1,0 +1,38 @@
+{
+    "name": "deeno/deeno",
+    "description": "Flat-file CMS in PHP with no database: content in Markdown with a YAML header, runs on any shared hosting.",
+    "type": "project",
+    "keywords": ["cms", "flat-file", "markdown", "php", "no-database", "static"],
+    "homepage": "https://github.com/deeno/deeno",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0",
+        "ext-mbstring": "*",
+        "ext-json": "*"
+    },
+    "suggest": {
+        "ext-gd": "Photo optimization and thumbnail generation on media upload",
+        "ext-zip": "Backups and installing themes/plugins from ZIP",
+        "ext-fileinfo": "Checking the MIME type of uploaded files by content",
+        "ext-exif": "Respecting EXIF orientation when processing photos"
+    },
+    "autoload": {
+        "classmap": ["system/"]
+    },
+    "scripts": {
+        "test": [
+            "php tests/run.php",
+            "php tests/managers.php"
+        ],
+        "smoke": "bash tests/smoke.sh",
+        "lint": "find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l"
+    },
+    "scripts-descriptions": {
+        "test": "Unit checks: pure logic (run.php) + file managers in a sandbox (managers.php)",
+        "smoke": "HTTP integration: spins up an isolated copy and hits real routes",
+        "lint": "php -l over all PHP files"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

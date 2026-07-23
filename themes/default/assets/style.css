@@ -1,0 +1,666 @@
+/* ============================================================
+   deeno — тема default
+   Дизайн-система «Clinical blueprint on frosted paper»
+   (референс shadcn/ui, см. DESIGN.md в корне проекта)
+
+   Белый холст, карточки 24px с волосяной границей и едва
+   заметной тенью, пилюльная геометрия (18px), ахроматика.
+   Единственный цвет — #e7000b, в теме не используется.
+   ============================================================ */
+
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/InterVariable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('fonts/InterVariable-Italic.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* Поверхности */
+  --canvas: #ffffff;
+  --paper: #ffffff;
+  --surface-alt: #fafafa;
+  --input-fill: #f5f5f5;
+
+  /* Чернила */
+  --ink: #0a0a0a;
+  --ink-soft: #171717;
+  --mid-gray: #737373;
+  --hairline: #e5e5e5;
+
+  --font: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+  /* Формы */
+  --radius-pill: 18px;
+  --radius-cards: 24px;
+  --radius-nested: 10px;
+
+  --shadow-card: 0 0 0 1px rgba(23, 23, 23, 0.05),
+                 0 1px 3px rgba(0, 0, 0, 0.1),
+                 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+
+  --page-max-width: 1280px;
+  --column: 760px;
+  --gutter: 24px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font);
+  background: var(--canvas);
+  color: var(--ink);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--ink); text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+::selection { background: #e5e5e5; }
+
+/* ------------------------------------------------------------
+   Плашка предпросмотра — тёмная инверсия (без градиентов)
+   ------------------------------------------------------------ */
+
+.preview-bar {
+  background: var(--ink);
+  color: #fafafa;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  padding: 10px var(--gutter);
+}
+
+/* ------------------------------------------------------------
+   Шапка
+   ------------------------------------------------------------ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--canvas);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.site-header__inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  height: 56px;
+  padding: 0 var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.site-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.site-tagline {
+  font-size: 13px;
+  color: var(--mid-gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.site-nav {
+  display: flex;
+  gap: 20px;
+  margin-right: auto;
+}
+
+.site-nav a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mid-gray);
+}
+
+.site-nav a:hover { color: var(--ink); }
+
+.site-search input {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--input-fill);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 14px;
+  min-width: 170px;
+}
+
+.site-search input::placeholder { color: var(--mid-gray); }
+
+.site-search input:focus {
+  outline: none;
+  background: var(--paper);
+  border-color: var(--hairline);
+}
+
+/* ------------------------------------------------------------
+   Основная колонка
+   ------------------------------------------------------------ */
+
+.site-main {
+  max-width: calc(var(--column) + var(--gutter) * 2);
+  margin: 0 auto;
+  padding: 48px var(--gutter) 80px;
+}
+
+/* ------------------------------------------------------------
+   Хиро главной
+   ------------------------------------------------------------ */
+
+.hero { padding: 24px 0 48px; }
+
+.hero__title {
+  font-size: clamp(36px, 7vw, 48px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  overflow-wrap: break-word;
+}
+
+.hero__lead {
+  margin-top: 12px;
+  font-size: 18px;
+  line-height: 1.56;
+  color: var(--mid-gray);
+  max-width: 36em;
+}
+
+/* Заголовок списков: тег / категория / поиск */
+
+.list-header { padding: 4px 0 32px; }
+
+.list-header__eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--mid-gray);
+  margin-bottom: 8px;
+}
+
+.list-header__title {
+  font-size: clamp(24px, 5vw, 30px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.75px;
+}
+
+.list-header__lead {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--mid-gray);
+  max-width: 36em;
+}
+
+.list-header__count {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--mid-gray);
+}
+
+.list-empty { color: var(--mid-gray); font-size: 14px; }
+
+/* ------------------------------------------------------------
+   Карточка поста
+   ------------------------------------------------------------ */
+
+.post-list { list-style: none; }
+
+.post-card {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.post-card__title {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.33;
+  letter-spacing: -0.6px;
+  margin-bottom: 6px;
+}
+
+.post-card__title a { color: var(--ink); }
+.post-card__title a:hover { color: var(--mid-gray); }
+
+.post-card__meta {
+  font-size: 13px;
+  color: var(--mid-gray);
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.post-card__meta a { color: var(--mid-gray); }
+.post-card__meta a:hover { color: var(--ink); }
+
+.post-card__tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+
+.post-card__excerpt {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.post-card__excerpt p { margin: 0 0 8px; }
+.post-card__excerpt p:last-child { margin-bottom: 0; }
+
+.post-card__more {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 14px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--input-fill);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.post-card__more:hover { background: #ececec; }
+
+/* Компактный вариант — «похожие посты» */
+
+.post-card--compact { padding: 16px 20px; border-radius: 16px; }
+.post-card--compact .post-card__title { font-size: 16px; letter-spacing: -0.01em; margin-bottom: 2px; }
+.post-card--compact .post-card__meta { margin-bottom: 0; }
+
+/* ------------------------------------------------------------
+   Теги — мягкие капсулы
+   ------------------------------------------------------------ */
+
+.tag {
+  display: inline-block;
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  background: var(--input-fill);
+}
+
+.tag:hover { background: #ececec; color: var(--ink); }
+
+/* ------------------------------------------------------------
+   Страница поста
+   ------------------------------------------------------------ */
+
+.post-header { padding: 16px 0 28px; }
+
+.post-title {
+  font-size: clamp(28px, 6vw, 36px);
+  font-weight: 600;
+  line-height: 1.11;
+  letter-spacing: -0.9px;
+  margin-bottom: 12px;
+}
+
+.post-meta {
+  font-size: 13px;
+  color: var(--mid-gray);
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.post-meta a { color: var(--mid-gray); }
+.post-meta a:hover { color: var(--ink); }
+
+.post-cover {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-cards);
+  border: 1px solid var(--hairline);
+  margin: 0 auto 28px;
+  display: block;
+}
+
+/* Статья */
+
+.post-content {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-card);
+  padding: 40px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4 {
+  font-weight: 600;
+  line-height: 1.33;
+  margin: 28px 0 10px;
+}
+
+.post-content h2 { font-size: 24px; letter-spacing: -0.6px; }
+.post-content h3 { font-size: 18px; letter-spacing: -0.2px; }
+.post-content h4 { font-size: 16px; }
+
+.post-content > h1:first-child,
+.post-content > h2:first-child,
+.post-content > h3:first-child,
+.post-content > p:first-child { margin-top: 0; }
+
+.post-content p { margin: 0 0 14px; }
+
+.post-content a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--mid-gray);
+}
+
+.post-content a:hover { text-decoration-color: var(--ink); }
+
+.post-content ul,
+.post-content ol { margin: 0 0 14px 22px; }
+
+.post-content li { margin-bottom: 5px; }
+
+.post-content blockquote {
+  border-left: 2px solid var(--ink);
+  padding: 2px 0 2px 18px;
+  margin: 0 0 14px;
+  color: var(--mid-gray);
+}
+
+.post-content code {
+  background: var(--input-fill);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.875em;
+  font-family: var(--font-mono);
+}
+
+.post-content pre {
+  background: var(--input-fill);
+  border-radius: var(--radius-nested);
+  padding: 18px 20px;
+  overflow-x: auto;
+  margin: 0 0 14px;
+}
+
+.post-content pre code {
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.post-content img {
+  max-width: 100%;
+  border-radius: var(--radius-nested);
+  border: 1px solid var(--hairline);
+  margin: 6px 0;
+}
+
+.post-content hr {
+  border: none;
+  border-top: 1px solid var(--hairline);
+  margin: 28px 0;
+}
+
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 14px;
+  font-size: 14px;
+}
+
+.post-content th,
+.post-content td {
+  padding: 9px 12px;
+  border: 1px solid var(--hairline);
+  text-align: left;
+}
+
+.post-content th {
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--mid-gray);
+  background: var(--surface-alt);
+}
+
+/* Теги под статьёй */
+
+.post-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* Похожие посты */
+
+.related { margin-top: 64px; }
+
+.related__title {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--mid-gray);
+  margin-bottom: 12px;
+}
+
+/* ------------------------------------------------------------
+   Пагинация
+   ------------------------------------------------------------ */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.pagination__info {
+  font-size: 14px;
+  color: var(--mid-gray);
+}
+
+.pagination__arrows { display: flex; gap: 8px; }
+
+.pagination__arrow {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1;
+}
+
+a.pagination__arrow:hover { background: var(--input-fill); }
+
+.pagination__arrow--disabled {
+  color: var(--hairline);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------
+   404
+   ------------------------------------------------------------ */
+
+.error-page { text-align: center; padding: 80px 0 100px; }
+
+.error-page h1 {
+  font-size: clamp(64px, 16vw, 120px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  color: var(--hairline);
+}
+
+.error-page h2 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  margin-top: 12px;
+}
+
+.error-page p { color: var(--mid-gray); margin-top: 10px; font-size: 14px; }
+
+.error-page a {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--input-fill);
+  padding: 8px 16px;
+}
+
+.error-page a:hover { background: #ececec; }
+
+/* ------------------------------------------------------------
+   Подвал
+   ------------------------------------------------------------ */
+
+.site-footer {
+  border-top: 1px solid var(--hairline);
+  background: var(--surface-alt);
+}
+
+.site-footer__inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 28px var(--gutter);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-footer__brand {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.site-footer__note { font-size: 13px; color: var(--mid-gray); }
+.site-footer a { color: var(--mid-gray); }
+.site-footer a:hover { color: var(--ink); }
+.site-footer__social {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  align-self: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-footer__social a { display: inline-flex; transition: color .15s; }
+.site-footer__social svg { display: block; }
+
+/* ------------------------------------------------------------
+   In-page edit — плавающая кнопка для вошедшего в админку
+   ------------------------------------------------------------ */
+
+.edit-fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: #fafafa;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .2);
+}
+
+.edit-fab:hover { opacity: .85; }
+
+.edit-fab svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+/* ------------------------------------------------------------
+   Адаптивность и доступность
+   ------------------------------------------------------------ */
+
+@media (max-width: 720px) {
+  .site-header__inner {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 10px var(--gutter);
+    gap: 10px;
+  }
+  .site-nav { gap: 14px; }
+  .site-search { width: 100%; }
+  .site-search input { width: 100%; }
+  .site-main { padding-top: 32px; }
+  .post-card { padding: 18px; border-radius: 16px; }
+  .post-content { padding: 22px 18px; border-radius: 16px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tag, .pagination__arrow, .post-card__title a, .site-nav a, .post-card__more { transition: color .12s, background .12s; }
+}
+
+/* --- Конструкции редактора deeno: выделение, цвет, выравнивание, видео --- */
+mark { background: #fde68a; color: inherit; padding: 0 .15em; border-radius: 2px; }
+.md-left { text-align: left; }
+.md-center { text-align: center; }
+.md-right { text-align: right; }
+.md-justify { text-align: justify; }
+.c-red { color: #dc2626; }
+.c-orange { color: #ea580c; }
+.c-yellow { color: #ca8a04; }
+.c-green { color: #16a34a; }
+.c-blue { color: #2563eb; }
+.c-purple { color: #9333ea; }
+.c-gray { color: #6b7280; }
+.md-video { position: relative; padding-bottom: 56.25%; height: 0; margin: 1.4em 0; }
+.md-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 8px; }

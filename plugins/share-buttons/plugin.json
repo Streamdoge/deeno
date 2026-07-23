@@ -1,0 +1,6 @@
+{
+    "name": "Share buttons",
+    "description": "Adds Telegram, VK and X sharing links at the end of an article. No tracking — plain share URLs, icons come from the system.",
+    "version": "1.0",
+    "author": "deeno"
+}
