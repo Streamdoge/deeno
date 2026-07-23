@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/database-none-4F6EF7" alt="No database">
 </p>
 
-<h3 align="center">🦕 A simple system, simple for everyone.</h3>
+<h3 align="center">🦖 A simple system, simple for everyone.</h3>
 
 **deeno** is a website in three steps. Upload the files, log in, and publish your
 first post. No database, no setup rituals, no build tools — it runs on the cheapest
