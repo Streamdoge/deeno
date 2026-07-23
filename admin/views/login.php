@@ -21,7 +21,7 @@ defined('FFC_ADMIN') or exit;
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title><?= e(t('Вход')) ?> — <?= e($siteTitle) ?></title>
+  <title><?= e(t('Вход')) ?> - <?= e($siteTitle) ?></title>
   <link rel="stylesheet" href="<?= e($adminBase) ?>assets/admin.css?v=<?= (int)@filemtime(__DIR__ . '/../assets/admin.css') ?>">
 </head>
 <body class="login-page">

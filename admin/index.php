@@ -307,7 +307,7 @@ function adminErrorPage(int $code, string $title, string $message): void
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title><?= e($title) ?> — <?= e($site) ?></title>
+  <title><?= e($title) ?> - <?= e($site) ?></title>
   <link rel="stylesheet" href="<?= e($base) ?>assets/admin.css?v=<?= (int)@filemtime(__DIR__ . '/assets/admin.css') ?>">
 </head>
 <body class="login-page">
