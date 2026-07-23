@@ -1,6 +1,6 @@
 {
     "name": "deeno/deeno",
-    "description": "Flat-file CMS in PHP with no database: content in Markdown with a YAML header, runs on any shared hosting.",
+    "description": "🦕 Flat-file CMS in PHP with no database: content in Markdown with a YAML header, runs on any shared hosting.",
     "type": "project",
     "keywords": ["cms", "flat-file", "markdown", "php", "no-database", "static"],
     "homepage": "https://github.com/deeno/deeno",
