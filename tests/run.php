@@ -216,7 +216,7 @@ $seo = new SeoManager(['site_title' => 'Мой сайт', 'site_description' => 
 $sp = new Post(['title' => 'Заголовок поста', 'excerpt' => 'Анонс поста', 'category' => 'novosti', 'date' => '2026-01-01'], 'Тело', 'x.md');
 $sp->siteUrl = 'https://s.ru';
 $h = $seo->head($sp, []);
-ok(str_contains($h, '<title>Заголовок поста | Мой сайт</title>'), 'title поста + название сайта');
+ok(str_contains($h, '<title>Заголовок поста / Мой сайт</title>'), 'title поста + название сайта');
 ok(str_contains($h, 'name="description"') && str_contains($h, 'Анонс поста'), 'description из анонса');
 ok(str_contains($h, '<meta property="og:type" content="article">'), 'og:type=article для поста');
 ok(str_contains($h, 'application/ld+json') && str_contains($h, 'BlogPosting'), 'JSON-LD BlogPosting');

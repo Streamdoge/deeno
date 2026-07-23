@@ -23,7 +23,7 @@ $uiTheme = ($adminTheme ?? 'light') === 'dark' ? 'dark' : 'light';
   <meta name="robots" content="noindex, nofollow">
   <meta name="csrf" content="<?= e($security->csrfToken()) ?>">
   <?php if (($siteFavicon ?? '') !== ''): ?><link rel="icon" href="<?= e($siteFavicon) ?>"><?php endif; ?>
-  <title><?= e($title) ?> - <?= e($siteTitle) ?></title>
+  <title><?= e($title) ?> / <?= e($siteTitle) ?></title>
   <link rel="stylesheet" href="<?= e($adminBase) ?>assets/admin.css?v=<?= (int)@filemtime(__DIR__ . '/../assets/admin.css') ?>">
 </head>
 <body>

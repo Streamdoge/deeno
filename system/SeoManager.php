@@ -34,8 +34,8 @@ class SeoManager
     {
         $isPost      = $post !== null;
         $title       = $isPost
-            ? ($post->seoTitle !== '' ? $post->seoTitle : $post->title . ' | ' . $this->siteTitle)
-            : (isset($ctx['title']) && $ctx['title'] !== '' ? $ctx['title'] . ' | ' . $this->siteTitle : $this->siteTitle);
+            ? ($post->seoTitle !== '' ? $post->seoTitle : $post->title . ' / ' . $this->siteTitle)
+            : (isset($ctx['title']) && $ctx['title'] !== '' ? $ctx['title'] . ' / ' . $this->siteTitle : $this->siteTitle);
         $description = $isPost
             ? ($post->seoDescription !== '' ? $post->seoDescription : $this->excerptText($post))
             : ((string)($ctx['description'] ?? '') !== '' ? (string)$ctx['description'] : $this->siteDescription);
