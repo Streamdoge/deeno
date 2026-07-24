@@ -35,6 +35,15 @@ defined('FFC_ADMIN') or exit;
   </div>
   <p class="login-card__subtitle"><?= e(t('Панель управления')) ?></p>
 
+  <?php if (!empty($demoMode) && ($demoLogin ?? '') !== ''): ?>
+    <div class="alert alert--info login-demo">
+      <strong><?= e(t('Демо-доступ')) ?></strong><br>
+      <?= e(t('Логин')) ?>: <code><?= e($demoLogin) ?></code><br>
+      <?= e(t('Пароль')) ?>: <code><?= e($demoPass ?? '') ?></code><br>
+      <span class="muted"><?= e(t('Песочница сбрасывается ежедневно, часть действий отключена.')) ?></span>
+    </div>
+  <?php endif; ?>
+
   <?php if (!empty($resetDone)): ?>
     <div class="alert alert--success"><?= e(t('Пароль обновлён — войдите с новым паролем.')) ?></div>
   <?php endif; ?>

@@ -384,6 +384,78 @@ check "author: расстановка закрыта → 403"    403 -b "$JAR2" 
 # Личные настройки панели открыты всем ролям — это не дыра, а осознанное решение
 check "author: настройки панели доступны → 200"  200 -b "$JAR2" "$BASE/admin/settings/"
 
+echo "Демо-режим:"
+# Публичная песочница: изменяющие действия запрещены на СЕРВЕРЕ (не только в UI),
+# создание/правка контента и личные настройки панели — разрешены.
+sed -i.bak 's/"plugins":\[\]/"plugins":[],"demo_mode":true/' "$TMP/config.php"
+
+# Запрещённое: создание пользователя. Проверяем и редирект на ?demo=1, и что
+# файл пользователя НЕ появился (доказывает серверный отказ, а не только UI).
+DEMO_LOC="$(curl -s -o /dev/null -D- -b "$JAR" -X POST "$BASE/admin/users/save/" \
+    --data-urlencode "csrf=$CSRF" --data-urlencode "username=hacker" \
+    --data-urlencode "password=hacker12345" --data-urlencode "role=admin" | grep -i '^location:')"
+if printf '%s' "$DEMO_LOC" | grep -q 'demo=1' && [ ! -f "$TMP/users/hacker.php" ]; then
+    PASS=$((PASS + 1)); printf '  \033[32m✓\033[0m демо: создание пользователя заблокировано (редирект ?demo=1, файла нет)\n'
+else
+    FAIL=$((FAIL + 1)); printf '  \033[31m✗ демо: пользователь создан или не было отказа\033[0m\n'
+fi
+
+# Запрещённое: удаление поста. Файл должен уцелеть.
+curl -s -o /dev/null -b "$JAR" -X POST "$BASE/admin/posts/delete/" \
+    --data-urlencode "csrf=$CSRF" --data-urlencode "file=owned-by-admin.md"
+if [ -f "$TMP/content/posts/owned-by-admin.md" ]; then
+    PASS=$((PASS + 1)); printf '  \033[32m✓\033[0m демо: удаление поста заблокировано (файл на месте)\n'
+else
+    FAIL=$((FAIL + 1)); printf '  \033[31m✗ демо: пост удалён под демо-режимом\033[0m\n'
+fi
+
+# Разрешённое, но принудительно в draft: гость шлёт status=published, а файл
+# ОБЯЗАН сохраниться черновиком — на публичный фронт контент гостя не попадает.
+curl -s -o /dev/null -b "$JAR" -X POST "$BASE/admin/posts/save/" \
+    --data-urlencode "csrf=$CSRF" --data-urlencode "file=" \
+    --data-urlencode "title=Демо пост" --data-urlencode "content=текст" --data-urlencode "status=published"
+DEMO_POST="$(ls "$TMP"/content/posts/*demo-post*.md 2>/dev/null | head -1)"
+if [ -n "$DEMO_POST" ] && grep -qE '^status: draft' "$DEMO_POST"; then
+    PASS=$((PASS + 1)); printf '  \033[32m✓\033[0m демо: пост создаётся, но принудительно в draft (не публичен)\n'
+else
+    FAIL=$((FAIL + 1)); printf '  \033[31m✗ демо: пост не создан или не ушёл в draft (status=%s)\033[0m\n' "$(grep -oE '^status: .*' "$DEMO_POST" 2>/dev/null)"
+fi
+
+# Запрещённое: загрузка медиа (AJAX-эндпоинт) — 403 JSON, не редирект.
+UP_CODE="$(curl -s -o /dev/null -w '%{http_code}' -b "$JAR" -X POST "$BASE/admin/media/upload/" \
+    --data-urlencode "csrf=$CSRF")"
+if [ "$UP_CODE" = "403" ]; then
+    PASS=$((PASS + 1)); printf '  \033[32m✓\033[0m демо: загрузка медиа заблокирована (403)\n'
+else
+    FAIL=$((FAIL + 1)); printf '  \033[31m✗ демо: загрузка медиа не заблокирована (код %s)\033[0m\n' "$UP_CODE"
+fi
+
+# Запрещённое: правка категории (её название видно на фронте) → редирект ?demo=1.
+CAT_LOC="$(curl -s -o /dev/null -D- -b "$JAR" -X POST "$BASE/admin/categories/save/" \
+    --data-urlencode "csrf=$CSRF" --data-urlencode "slug=novosti" \
+    --data-urlencode "title=ВЗЛОМ" | grep -i '^location:')"
+if printf '%s' "$CAT_LOC" | grep -q 'demo=1'; then
+    PASS=$((PASS + 1)); printf '  \033[32m✓\033[0m демо: правка категории заблокирована (редирект ?demo=1)\n'
+else
+    FAIL=$((FAIL + 1)); printf '  \033[31m✗ демо: правка категории не заблокирована\033[0m\n'
+fi
+
+# Настройки сайта скрыты у демо-админа (isSiteAdmin=false), личная карточка — на месте.
+DEMO_SET="$(curl -s -b "$JAR" "$BASE/admin/settings/")"
+if printf '%s' "$DEMO_SET" | grep -q 'name="admin_theme"' && ! printf '%s' "$DEMO_SET" | grep -q 'name="site_url"'; then
+    PASS=$((PASS + 1)); printf '  \033[32m✓\033[0m демо: настройки сайта скрыты, карточка панели доступна\n'
+else
+    FAIL=$((FAIL + 1)); printf '  \033[31m✗ демо: настройки сайта не скрыты у демо-админа\033[0m\n'
+fi
+
+# Плашка «демо-режим» видна в шапке админки.
+if printf '%s' "$(curl -s -b "$JAR" "$BASE/admin/")" | grep -q 'demo-banner'; then
+    PASS=$((PASS + 1)); printf '  \033[32m✓\033[0m демо: плашка в шапке админки\n'
+else
+    FAIL=$((FAIL + 1)); printf '  \033[31m✗ демо: плашки в шапке нет\033[0m\n'
+fi
+sed -i.bak 's/,"demo_mode":true//' "$TMP/config.php"
+
 echo "Режим обслуживания:"
 sed -i.bak 's/"maintenance_mode":false/"maintenance_mode":true/' "$TMP/config.php"
 check "обслуживание: гость → 503"            503 "$BASE/"

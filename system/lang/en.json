@@ -382,5 +382,11 @@
   "Секретный ключ сохранён": "Secret key stored",
   "Внешние скрипты": "External scripts",
   "Разрешённые домены": "Allowed domains",
-  "Счётчики и виджеты: по одному домену в строке. Остальные браузер заблокирует.": "Analytics and widgets: one domain per line. Anything else is blocked by the browser."
+  "Счётчики и виджеты: по одному домену в строке. Остальные браузер заблокирует.": "Analytics and widgets: one domain per line. Anything else is blocked by the browser.",
+  "В демо-режиме это действие отключено.": "This action is disabled in demo mode.",
+  "В демо-режиме загрузка отключена.": "Uploads are disabled in demo mode.",
+  "Демо-режим — это песочница, данные сбрасываются ежедневно. Изменяющие действия отключены.": "Demo mode — this is a sandbox, data is reset daily. Modifying actions are disabled.",
+  "Демо-доступ": "Demo access",
+  "Логин": "Login",
+  "Песочница сбрасывается ежедневно, часть действий отключена.": "The sandbox is reset daily; some actions are disabled."
 }

@@ -165,6 +165,10 @@ $adminBase = '/' . $adminPath . '/';
 $GLOBALS['ffcAdminBase'] = $adminBase;
 $GLOBALS['ffcCspNonce']  = $cspNonce;
 $GLOBALS['ffcSiteTitle'] = (string)($config['site_title'] ?? 'deeno');
+// Демо-режим (публичная песочница demo.deeno.tech): флаг только в конфиге, в UI
+// его нет. При ЧПУ этот файл подключается внутри метода Router, поэтому top-level
+// $config не виден функциям через global — кладём флаг явно, как ffcAdminBase.
+$GLOBALS['ffcDemoMode'] = !empty($config['demo_mode']);
 
 // ----------------------------------------------------------------
 // Разбор URL: /admin/<action>/<sub>/
@@ -328,6 +332,24 @@ function csrfFail(): void
     adminErrorPage(403, t('Сессия устарела'), t('Сессия устарела, попробуйте ещё раз.'));
 }
 
+/** Включён ли демо-режим (публичная песочница). Флаг только в конфиге. */
+function isDemoMode(): bool
+{
+    return !empty($GLOBALS['ffcDemoMode']);
+}
+
+/**
+ * Отказ в изменяющем действии под демо-режимом. Не пугающая 403-заглушка:
+ * возвращаемся на тот же раздел с ?demo=1 — layout покажет тост «В демо-режиме
+ * это действие отключено». Все запрещённые эндпоинты — обычные form-POST с
+ * редиректом, поэтому JSON-ответ не нужен.
+ */
+function demoDenied(string $redirectTo = ''): void
+{
+    $base = (string)($GLOBALS['ffcAdminBase'] ?? './');
+    adminRedirect(($redirectTo !== '' ? $redirectTo : $base) . '?demo=1');
+}
+
 /**
  * Проверка прав: роль пользователя должна
  * входить в список разрешённых, иначе 403. Вызывается в начале роутов.
@@ -489,6 +511,10 @@ if ($user === null && $action !== 'logout') {
     // Логотип сайта — тот же, что в шапке сайдбара (Настройки → «Логотип»)
     $siteLogo  = (string)($config['logo'] ?? '');
     $resetDone = isset($_GET['reset_done']);
+    // Демо-режим: показываем на форме известные логин/пароль песочницы
+    $demoMode  = isDemoMode();
+    $demoLogin = (string)($config['demo_login'] ?? '');
+    $demoPass  = (string)($config['demo_pass'] ?? '');
     require __DIR__ . '/views/login.php';
     exit;
 }
@@ -504,6 +530,43 @@ if ($action === 'logout') {
 // Сюда доходят только авторизованные (страховка)
 if ($user === null) {
     adminRedirect($adminBase);
+}
+
+// ----------------------------------------------------------------
+// Демо-режим: единая точка отказа для изменяющих действий (сервер, не UI).
+// Максимальная защита публичной песочницы от злоупотреблений:
+//   • загрузка медиа ЗАПРЕЩЕНА (иначе демо = публичный файлхостинг для
+//     чужих/незаконных файлов);
+//   • правка категорий ЗАПРЕЩЕНА (их название видно на фронте);
+//   • создание/правка постов и страниц РАЗРЕШЕНЫ, но принудительно уходят в
+//     draft (см. ниже, обработчик save) — гость видит свою работу в редакторе
+//     и предпросмотре, но на публичный фронт она не попадает;
+//   • reorder и личная тема/язык — разрешены (публичного текста не несут).
+// Запрещено также: удаление контента, всё в users/backups, темы/плагины,
+// профиль. Настройки сайта закрываются через $isSiteAdmin ниже.
+// ----------------------------------------------------------------
+if (isDemoMode() && $isPost) {
+    $demoBlocked = [
+        'posts'      => ['delete'],
+        'pages'      => ['delete'],
+        'categories' => ['create', 'save', 'delete'],
+        'users'      => ['save', 'delete'],
+        'profile'    => [''],   // POST на /profile/ без sub — смена пароля/email
+        'themes'     => ['activate', 'install', 'delete'],
+        'plugins'    => ['toggle', 'install', 'delete'],
+        'backups'    => ['create', 'delete'],
+        'media'      => ['upload', 'delete'],
+    ];
+    if (isset($demoBlocked[$action]) && in_array($sub, $demoBlocked[$action], true)) {
+        // Загрузка медиа — AJAX-эндпоинт, ждёт JSON (иначе редактор молча
+        // «повиснет» на редиректе). Остальные — обычные form-POST с редиректом.
+        if ($action === 'media' && $sub === 'upload') {
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code(403);
+            exit(json_encode(['error' => t('В демо-режиме загрузка отключена.')]));
+        }
+        demoDenied($adminBase . $action . '/');
+    }
 }
 
 // Маршрут /admin/lang/ убран (2026-07-20): язык выбирается в Настройках →
@@ -526,6 +589,7 @@ $common    = [
     'cspNonce'  => $cspNonce,
     'adminLang' => $adminLang,
     'adminTheme' => $adminTheme,
+    'demoMode'  => isDemoMode(),
 ];
 
 // Джамп-бар (⌘K): контент + быстрые действия с учётом роли; счётчики для сайдбара.
@@ -755,6 +819,13 @@ if ($action === 'posts' || $action === 'pages') {
         // Author не может перезаписать чужой пост, подставив его имя файла
         requireOwnPost((string)($_POST['file'] ?? ''), $user, $type, $cms, true);
         $_POST['type'] = $type;
+        // Демо-режим: что бы гость ни выбрал, материал уходит в draft — на
+        // публичный фронт (и в RSS/Sitemap) он не попадёт, но остаётся виден
+        // автору в редакторе и предпросмотре. Так «Создать/Опубликовать»
+        // работает, а обгадить публичную витрину нельзя.
+        if (isDemoMode()) {
+            $_POST['status'] = 'draft';
+        }
         $result = $controller->save($_POST, $user);
         if (isset($result['error'])) {
             $back = (string)($_POST['file'] ?? '') !== ''
@@ -1310,8 +1381,10 @@ if ($action === 'backups') {
 if ($action === 'settings') {
     // Раздел открыт всем ролям, но не-админ видит только личные настройки
     // панели (тема и язык) — они переехали сюда из сайдбара. Всё, что меняет
-    // сайт, по-прежнему доступно исключительно администратору.
-    $isSiteAdmin = ($user['role'] ?? '') === 'admin';
+    // сайт, по-прежнему доступно исключительно администратору. В демо-режиме
+    // даже админ приравнивается к обычной роли: настройки сайта скрыты и на
+    // сервере не принимаются, личная карточка «Панель управления» остаётся.
+    $isSiteAdmin = ($user['role'] ?? '') === 'admin' && !isDemoMode();
     $settingsErr = '';
 
     if ($isPost) {

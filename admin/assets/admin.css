@@ -328,6 +328,21 @@ a.sidebar__user:hover { color: var(--ink); }
   color: var(--ink);
 }
 
+/* ---------- Плашка демо-режима (публичная песочница) ---------- */
+.demo-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: var(--warn-soft);
+  color: var(--warn-deep);
+  border-bottom: 1px solid var(--hairline);
+  font-size: 13px;
+  font-weight: 500;
+}
+.demo-banner .ico { flex: none; }
+.demo-banner .ico svg { width: 16px; height: 16px; }
+
 /* ---------- Карточки: белые, 6px, граница gray-100, без тени ---------- */
 
 .card {
@@ -852,6 +867,9 @@ a.sidebar__user:hover { color: var(--ink); }
 }
 .alert--danger  { background: var(--ember-soft); border-color: transparent; color: var(--ember-deep); }
 .alert--success { color: var(--ink); }
+.alert--info    { background: var(--accent-soft); border-color: transparent; color: var(--ink); }
+.login-demo { text-align: left; line-height: 1.6; }
+.login-demo code { background: var(--frost); padding: 1px 6px; border-radius: 4px; }
 
 .toasts {
   position: fixed;

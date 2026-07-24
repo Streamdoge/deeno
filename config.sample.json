@@ -30,5 +30,8 @@
     "og_image": "",
     "media_max_width": 2560,
     "media_quality": 82,
+    "demo_mode": false,
+    "demo_login": "",
+    "demo_pass": "",
     "plugins": []
 }

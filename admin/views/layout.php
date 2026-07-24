@@ -73,6 +73,9 @@ $uiTheme = ($adminTheme ?? 'light') === 'dark' ? 'dark' : 'light';
   <div class="overlay" id="overlay"></div>
 
   <div class="main">
+    <?php if (!empty($demoMode)): ?>
+      <div class="demo-banner"><?= icon('alert') ?><span><?= e(t('Демо-режим — это песочница, данные сбрасываются ежедневно. Изменяющие действия отключены.')) ?></span></div>
+    <?php endif; ?>
     <?php
     // Хлебные крошки: раздел (ссылка) / текущий заголовок
     $sections = [
@@ -123,6 +126,10 @@ $uiTheme = ($adminTheme ?? 'light') === 'dark' ? 'dark' : 'light';
     <div class="jump__list" id="jump-list" role="listbox"></div>
   </div>
 </div>
+
+<?php if (isset($_GET['demo'])): ?>
+  <div class="alert alert--danger" data-toast><?= e(t('В демо-режиме это действие отключено.')) ?></div>
+<?php endif; ?>
 
 <div class="toasts" id="toasts"></div>
 

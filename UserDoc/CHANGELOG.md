@@ -3,6 +3,21 @@
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **Demo mode** (`"demo_mode": true` in the config) for public sandbox
+  deployments. Server-side (not just in the UI) it locks the sandbox down so a
+  stranger can explore the panel without defacing or abusing it: deleting
+  content, managing users, backups, themes, plugins and categories, changing
+  site settings, uploading media, and editing the admin profile are all blocked;
+  any post or page a visitor saves is forced to `draft`, so nothing they create
+  reaches the public site. Visitors can still open the editor, write draft
+  content, reorder, and switch their own panel theme and language. A banner
+  marks the panel as a demo, blocked actions show a toast, and the login screen
+  can display the demo credentials (`demo_login` / `demo_pass`).
+
 ## [1.0.0] — 2026-07-17
 
 First public release. A complete, database-less flat-file CMS.
